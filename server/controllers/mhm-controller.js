@@ -42,11 +42,14 @@ const createMHM = async (req, res, next) => {
     // What if there already exists one?
     createdMHM = new MHMObject({
       name,
+      type: 'mhm',
       status: 'available',
       workstatus: 'idle',
       transportclass,
       location,
       description,
+      zone: 'NaN',
+      lastseen: (Date.now() + (2*60*60*1000))
     });
   } catch (err) {
     return next(
@@ -68,7 +71,7 @@ const createMHM = async (req, res, next) => {
     );
   }
 
-  res.status(201).json({ name });
+  res.status(201).json({ createdMHM });
 };
 
 const getMHMById = async (req, res, next) => {

@@ -42,11 +42,8 @@ const requestDashboardData = async (
 ) => {
   try {
     await requestSOs(setLoadedSOs, sendRequest);
-    console.log('SOs loaded')
     await requestMHMs(setLoadedMHMs, sendRequest);
-    console.log('MHMS loaded')
     await requestJobs(setLoadedJobs, sendRequest);
-    console.log('Jobs loaded')
   } catch (err) {
     console.log('[requestDashboardData], An error occured', err);
   }

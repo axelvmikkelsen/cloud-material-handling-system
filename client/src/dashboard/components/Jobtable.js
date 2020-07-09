@@ -3,17 +3,7 @@ import { Card } from 'react-bootstrap';
 
 import TableList from './TableList';
 
-const convertToDate = (timestamp) => {
-  let date = new Date(timestamp);
-  let day = date.getDay();
-  let month = date.getMonth();
-  let year = date.getFullYear();
-  let hours = date.getHours();
-  let minutes = "0" + date.getMinutes();
-  let seconds = "0" + date.getSeconds();
-
-  return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2) + '   ' + day + '/' + month + '-' + year ;
-}
+import timeUtil from '../../shared/util/timeUtil';
 
 const JobTable = (props) => {
   const headers = ['Description', 'Work Status', 'Created'];
@@ -26,7 +16,15 @@ const JobTable = (props) => {
     try {
       entry.id = obj.description;
       entry.workstatus = obj.workstatus;
-      entry.created = convertToDate(obj.timecreated);
+      entry.created = timeUtil.convertToDate(obj.timecreated);
+      if (obj.timeassigned) {
+        headers.push('Assigned');
+        entry.assigned = timeUtil.convertToDate(obj.timeassigned);
+      }
+      if (obj.timecompleted) {
+        headers.push('Completed');
+        entry.completed = timeUtil.convertToDate(obj.timecompleted);
+      }
     } catch (err) {
       console.log('Something went wrong accessing the array');
     }

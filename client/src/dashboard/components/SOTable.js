@@ -2,6 +2,8 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 
 import TableList from './TableList';
+import timeUtil from '../../shared/util/timeUtil';
+
 
 const SOTable = (props) => {
 
@@ -15,7 +17,7 @@ const SOTable = (props) => {
     try {
       entry.id = obj.name;
       entry.zone = obj.zone;
-      entry.lastseen = obj.lastseen;
+      entry.lastseen = timeUtil.timestamptToTimeAgo(obj.lastseen);
     } catch (err) {
       console.log('Something went wrong accessing the array');
     }

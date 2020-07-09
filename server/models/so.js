@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const soSchema = new Schema({
   name: { type: String, required: true},
-  type: { type: String, required: true },
+  type: { type: String },
   transportclass: {
     agv: { type: Boolean, required: true },
     forklift: { type: Boolean, required: true },
@@ -14,7 +14,7 @@ const soSchema = new Schema({
     x: { type: Number },
     y: { type: Number },
   },
-  lastseen: { type: Date },
+  lastseen: { type: Number },
   zone: { type: String },
   description: { type: String, required: true },
 });

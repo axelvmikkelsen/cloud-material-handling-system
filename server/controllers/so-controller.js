@@ -9,7 +9,6 @@ const getSmartObjects = async (req, res, next) => {
   console.log('Request made')
   try {
     smartobjects = await SmartObject.find({});
-    console.log('Trying to find the SO')
   } catch (err) {
     return next(new HttpError('Could not retrieve Smart Objects', 500));
   }
@@ -64,10 +63,13 @@ const createSmartObject = async (req, res, next) => {
 
     createdSO = new SmartObject({
       name,
+      type: 'so',
       status: 'Unassigned',
       transportclass,
       location,
       description,
+      zone: 'NaN',
+      lastseen: (Date.now() + (2*60*60*1000))
     });
   } catch (err) {
     return next(
@@ -79,11 +81,11 @@ const createSmartObject = async (req, res, next) => {
     await createdSO.save();
   } catch (err) {
     return next(
-      new HttpError('Smart Object creation failed, please try again', 500)
+      new HttpError('Smart Object save failed, please try again', 500)
     );
   }
 
-  res.status(201).json({ name: name });
+  res.status(201).json({ created: createdSO });
 };
 
 const updateSmartObjectLocation = async (req, res, next) => {

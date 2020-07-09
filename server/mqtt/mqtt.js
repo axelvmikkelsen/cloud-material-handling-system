@@ -31,28 +31,9 @@ const runMqtt = (triggerDbUpdate) => {
     console.log(`mqtt client disconnected`);
   });
 
-  let connectedClients = 0;
-
-  // io.on('connection', (socket) => {
-  //   socket.on('disconnect', () => {
-  //     connectedClients--;
-  //     console.log('Clients connected: ', connectedClients);
-  //   });
-  //   connectedClients++;
-  //   console.log('Clients connected', connectedClients);
-  // });
-
-  // mqttClient.getClient().subscribe('app');
-
   mqttClient.on('message', (topic, message) => {
-    let msg = JSON.parse(message)[0];
-    // NB! Need to run for each tag in the message, only a single handled atm
-    triggerDbUpdate(msg);
-    
-    
-    // console.log(JSON.stringify(msg))
-
-    // io.emit('app', received);
+    let messageString = JSON.parse(message);
+    messageString.map((msg) => triggerDbUpdate(msg))
   });
 
 

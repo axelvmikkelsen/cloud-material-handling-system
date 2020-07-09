@@ -2,6 +2,9 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 
 import TableList from './TableList';
+import timeUtil from '../../shared/util/timeUtil';
+
+
 
 const MHMTable = (props) => {
 
@@ -17,7 +20,7 @@ const MHMTable = (props) => {
         entry.workstatus = obj.workstatus
         entry.status = obj.status
         entry.zone = obj.zone;
-        entry.lastseen = obj.lastseen;
+        entry.lastseen = timeUtil.timestamptToTimeAgo(obj.lastseen);
       } catch (err) {
         console.log('Something went wrong accessing the array');
       }

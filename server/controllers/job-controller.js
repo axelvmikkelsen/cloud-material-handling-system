@@ -51,10 +51,11 @@ const createJob = async (req, res, next) => {
   try {
     await createdJob.save();
   } catch (err) {
+    res.status(500).json({ success: false })
     return next(new HttpError('Saving the Job failed, please try again', 500));
   }
 
-  res.status(201).json({ move: smartObject.name, description });
+  res.status(201).json({ success: true });
 };
 
 const getJobs = async (req, res, next) => {

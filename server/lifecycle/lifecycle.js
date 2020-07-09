@@ -59,7 +59,7 @@ const triggerDbUpdate = async (message) => {
 
   const tagObject = await helper.findTag(tagId);
 
-  await updateLocationAndZone(tagObject, data.coordinates);
+  await updateLocationAndZone(tagObject, data.coordinates, timestamp-(2*60*60));
   setTimeout(async () => {
     await jobHandler(tagObject);
   }, 500);
@@ -71,18 +71,19 @@ const triggerDbUpdate = async (message) => {
   }
 };
 
-const updateLocationAndZone = async (tagObject, coord) => {
+const updateLocationAndZone = async (tagObject, coord, timestamp) => {
   const distanceMoved = measures.euclideanDistance(tagObject.location, coord);
   // If the tag hasn't moved since last message, no update
-  if (distanceMoved <= 50) {
-    return;
-  }
+  // if (distanceMoved <= 50) {
+  //   return;
+  // }
   const zone = helper.classifyZone(zones, coord);
 
   try {
     tagObject.location.x = coord.x;
     tagObject.location.y = coord.y;
     tagObject.zone = zone.name;
+    tagObject.lastseen = Math.round(timestamp)
   } catch (err) {
     throw new HttpError('Fields for the tags could not be retrieved', 500);
   }
@@ -98,7 +99,6 @@ const updateLocationAndZone = async (tagObject, coord) => {
 };
 
 const jobHandler = async (tagObject) => {
-  console.log('message arrived');
 
   if (tagObject.type === 'so') {
     return;
@@ -116,9 +116,13 @@ const jobHandler = async (tagObject) => {
   } catch (err) {
     throw new HttpError('Could not find a Job, something went wrong', 500);
   }
+
+  // If no jobs are found we return
   if (jobObject.length === 0) {
     return;
   }
+
+  // If the job is found the single array element is extracted
   if (jobObject.length === 1) {
     jobObject = jobObject[0];
   }
@@ -134,6 +138,7 @@ const jobHandler = async (tagObject) => {
     );
     if (distance <= 500) {
       jobObject.workstatus = 'completed';
+      jobObject.timecompleted = Date.now();
       tagObject.workstatus = 'idle';
       tagObject.status = 'unassigned';
       changed = true;
@@ -142,7 +147,7 @@ const jobHandler = async (tagObject) => {
 
   if (jobObject.workstatus === 'pick-up') {
     distance = measures.euclideanDistance(jobObject.from, tagObject.location);
-    console.log('pick-up', distance);
+    // console.log('pick-up', distance);
     if (distance <= 500) {
       jobObject.workstatus = 'delivering';
       tagObject.workstatus = 'delivering';

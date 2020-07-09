@@ -36,11 +36,12 @@ const Dashboard = () => {
           setLoadedJobs,
           sendRequest
         );
-        console.log('Refreshing')
+        console.log('Refreshing');
       },
 
-      20000
+      10000
     );
+    clearInterval(dbRefreshInterval);
     return () => clearInterval(dbRefreshInterval);
   }, [sendRequest]);
 
@@ -169,30 +170,30 @@ const Dashboard = () => {
           <hr style={{ marginTop: '20px', align: 'center', width: '99.7%' }} />
         </Card.Body>
       </Card>
-      <JobCard style={{ margin: '5px' }} jobs={loadedJobs} />
-      <CardDeck style={{ margin: '5px', marginBottom: '15px' }}>
-        {isLoading && (
-          <Card.Body>
-            <div className="center">
-              <LoadingSpinner />
-            </div>
-          </Card.Body>
-        )}
-        {!isLoading && loadedMHMs && loadedSOs && (
-          <React.Fragment>
+      {/* {isLoading && (
+        <Card.Body>
+          <div className="center">
+            <LoadingSpinner />
+          </div>
+        </Card.Body>
+      )} */}
+      {loadedMHMs && loadedSOs && loadedJobs && (
+        <React.Fragment>
+          <JobCard style={{ margin: '5px' }} jobs={loadedJobs} />
+          <CardDeck style={{ margin: '5px', marginBottom: '15px' }}>
             <SOTable
               title={'Smart Objects'}
-              description={'Description or whatever'}
+              description={'Objects to be picked up and delivered at specified locations.'}
               content={loadedSOs}
             />
             <MHMTable
               title={'Material Handling Modules'}
-              description={'Description or whatever'}
+              description={'Handlers able to transport Smart Objects.'}
               content={loadedMHMs}
             />
-          </React.Fragment>
-        )}
-      </CardDeck>
+          </CardDeck>
+        </React.Fragment>
+      )}
     </div>
   );
 };
