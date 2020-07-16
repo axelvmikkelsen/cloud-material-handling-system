@@ -3,5 +3,6 @@
 
 /server/nodemon.json
 /server/node_modules
+/server/.vscode
 
 /.DS_Store
