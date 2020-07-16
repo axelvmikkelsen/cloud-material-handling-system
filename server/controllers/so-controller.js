@@ -66,10 +66,13 @@ const createSmartObject = async (req, res, next) => {
       type: 'so',
       status: 'Unassigned',
       transportclass,
-      location,
+      location: {
+        x: -1,
+        y: -1
+      },
       description,
       zone: 'NaN',
-      lastseen: (Date.now() + (2*60*60*1000))
+      lastseen: (Date.now() + (4*60*60*1000))/1000
     });
   } catch (err) {
     return next(
@@ -85,7 +88,7 @@ const createSmartObject = async (req, res, next) => {
     );
   }
 
-  res.status(201).json({ created: createdSO });
+  res.status(201).json({ created: createdSO, success: true });
 };
 
 const updateSmartObjectLocation = async (req, res, next) => {

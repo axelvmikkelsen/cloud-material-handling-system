@@ -21,6 +21,7 @@ const mhmRoutes = require('./routes/mhm-routes');
 const soRoutes = require('./routes/so-routes');
 const mapRoutes = require('./routes/map-routes');
 const lifecycleRoutes = require('./routes/lifecycle-routes');
+const loginRoutes = require('./routes/login-routes.js');
 
 app.use(bodyParser.json()); // Parses all incoming data for POST requests.
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -42,6 +43,7 @@ app.use('/api/so', soRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/map', mapRoutes)
 app.use('/api/lifecycle', lifecycleRoutes);
+app.use('/api/login', loginRoutes);
 
 app.use((req, res, next) => {
   throw new HttpError('Could not find this route', 404);

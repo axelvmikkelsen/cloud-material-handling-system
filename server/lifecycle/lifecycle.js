@@ -77,7 +77,10 @@ const updateLocationAndZone = async (tagObject, coord, timestamp) => {
   // if (distanceMoved <= 50) {
   //   return;
   // }
-  const zone = helper.classifyZone(zones, coord);
+  let zone = helper.classifyZone(zones, coord);
+  if (!zone) {
+    zone = {name: 'NaN'}
+  }
 
   try {
     tagObject.location.x = coord.x;

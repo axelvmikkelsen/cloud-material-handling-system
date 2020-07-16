@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { useHttpClient } from '../../shared/hooks/http-hook';
+import { useHttpClient } from '../shared/hooks/http-hook';
 
 import { Card, Form, Button, Col } from 'react-bootstrap';
-import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import LoadingSpinner from '../shared/components/UIElements/LoadingSpinner';
 
 const CreateJob = () => {
   const [loadedSOs, setLoadedSOs] = useState();
@@ -80,7 +80,7 @@ const CreateJob = () => {
   };
 
   if (formSuccess) {
-     return <Redirect to="/" />
+     return <Redirect to="/dashboard" />
   }
 
   return (

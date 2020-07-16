@@ -7,26 +7,55 @@ import {
 } from 'react-router-dom';
 
 import Dashboard from './dashboard/pages/Dashboard';
-import CreateJob from './job/pages/CreateJob';
+import CreateJob from './create/CreateJob';
+import CreateTag from './create/CreateTag';
 import Navigation from './shared/components/Navigation/Navigation';
+import Auth from './auth/pages/Auth';
+
+import { AuthContext } from './shared/context/auth-context';
+import { useAuth } from './shared/hooks/auth-hook';
 
 const App = () => {
+  const { token, login, logout, userId } = useAuth();
+
+  let routes
+
+  if (token) {
+    routes = (
+      <Switch>
+        <Route path="/create/job" exact>
+          <CreateJob />
+        </Route>
+        <Route path="/create/tag" exact>
+          <CreateTag />
+        </Route>
+        <Route path="/dashboard" exact>
+          <Dashboard />
+        </Route>
+        <Redirect to="/dashboard" />
+      </Switch>
+    );
+  } else {
+    routes = (
+          <Auth />
+    );
+  }
 
   return (
-    <Router>
-      <Navigation />
-      <main>
-        <Switch>
-          <Route path="/" exact>
-            <Dashboard />
-          </Route>
-          <Route path="/jobs/new" exact>
-            <CreateJob />
-          </Route>
-          <Redirect to ="/" />
-        </Switch>
-      </main>
-    </Router>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout,
+      }}
+    >
+      <Router>
+        <Navigation />
+        <main>{routes}</main>
+      </Router>
+    </AuthContext.Provider>
   );
 };
 

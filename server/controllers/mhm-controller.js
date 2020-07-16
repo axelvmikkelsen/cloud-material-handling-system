@@ -46,10 +46,13 @@ const createMHM = async (req, res, next) => {
       status: 'available',
       workstatus: 'idle',
       transportclass,
-      location,
+      location: {
+        x: -1,
+        y: -1
+      },
       description,
       zone: 'NaN',
-      lastseen: (Date.now() + (2*60*60*1000))
+      lastseen: (Date.now() + (4*60*60*1000))/1000
     });
   } catch (err) {
     return next(
@@ -71,7 +74,7 @@ const createMHM = async (req, res, next) => {
     );
   }
 
-  res.status(201).json({ createdMHM });
+  res.status(201).json({ created: createdMHM, success: true });
 };
 
 const getMHMById = async (req, res, next) => {
