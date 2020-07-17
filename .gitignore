@@ -1,8 +1,10 @@
 /client/.env
 /client/node_modules
+/client/package-lock.json
 
 /server/nodemon.json
 /server/node_modules
+/server/package-lock.json
 /server/.vscode
 
 /.DS_Store

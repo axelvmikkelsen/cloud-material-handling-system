@@ -19,6 +19,7 @@
     "mongoose": "^5.9.20",
     "mongoose-unique-validator": "^2.0.3",
     "mqtt": "^4.1.0",
+    "path": "^0.12.7",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {

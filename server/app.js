@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 
 // const iot = require('./mqtt/mqtt');
 // const io = null;
@@ -25,6 +26,7 @@ const loginRoutes = require('./routes/login-routes.js');
 
 app.use(bodyParser.json()); // Parses all incoming data for POST requests.
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'client/build)')));
 
 // Setting headers to allow browser to access backend
 app.use((req, res, next) => {
