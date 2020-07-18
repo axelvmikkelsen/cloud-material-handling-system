@@ -4,6 +4,8 @@ import { Container, Row, Card, Form, Button } from 'react-bootstrap';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
 
+import ReactModal from '../../shared/components/UIElements/ReactModal';
+
 const Auth = () => {
   const auth = useContext(AuthContext);
 
@@ -12,7 +14,7 @@ const Auth = () => {
     password: '',
   });
 
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { error, sendRequest, clearError } = useHttpClient();
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
@@ -50,6 +52,7 @@ const Auth = () => {
         marginTop: '200px',
       }}
     >
+      {error && <ReactModal heading={"Login failed"} error={error} save={false} clear={clearError} />}
       <Row>
         <Card style={{ width: '500px'}}>
           <Card.Header className="text-center">

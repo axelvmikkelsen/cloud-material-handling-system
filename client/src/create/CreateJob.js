@@ -5,6 +5,7 @@ import { useHttpClient } from '../shared/hooks/http-hook';
 
 import { Card, Form, Button, Col } from 'react-bootstrap';
 import LoadingSpinner from '../shared/components/UIElements/LoadingSpinner';
+import ReactModal from '../shared/components/UIElements/ReactModal';
 
 const CreateJob = () => {
   const [loadedSOs, setLoadedSOs] = useState();
@@ -89,6 +90,7 @@ const CreateJob = () => {
         <Card.Title style={{ marginTop: '10px' }}>Create Job</Card.Title>
       </Card.Header>
       <Card.Body>
+        {error && <ReactModal heading={"Something went wrong"} error={error} save={false} clear={clearError} />}
         {isLoading && <LoadingSpinner />}
         {!isLoading && (
           <Form onSubmit={onSubmitHandler}>

@@ -7,7 +7,7 @@ import timeUtil from '../../shared/util/timeUtil';
 
 const SOTable = (props) => {
 
-  const headers = ['Tag ID', 'Location', 'Last seen'];
+  const headers = ['Tag ID', 'Zone', 'Last seen'];
 
   const objects = [];
 

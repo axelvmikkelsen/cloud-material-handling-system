@@ -5,7 +5,7 @@ import SOTable from '../components/SOTable';
 import MHMTable from '../components/MHMTable';
 import JobCard from '../components/JobCard/JobCard';
 
-import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ReactModal from '../../shared/components/UIElements/ReactModal';
 
 import getDataFunctions from '../getDataFunctions/getDataFunctions';
 import { useHttpClient } from '../../shared/hooks/http-hook';
@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [loadedMHMs, setLoadedMHMs] = useState();
   const [loadedJobs, setLoadedJobs] = useState();
 
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { error, sendRequest, clearError } = useHttpClient();
 
   const [mqttIsActive, setMqttIsActive] = useState(false);
 
@@ -41,7 +41,7 @@ const Dashboard = () => {
 
       10000
     );
-    clearInterval(dbRefreshInterval);
+    // clearInterval(dbRefreshInterval);
     return () => clearInterval(dbRefreshInterval);
   }, [sendRequest]);
 
@@ -170,13 +170,7 @@ const Dashboard = () => {
           <hr style={{ marginTop: '20px', align: 'center', width: '99.7%' }} />
         </Card.Body>
       </Card>
-      {/* {isLoading && (
-        <Card.Body>
-          <div className="center">
-            <LoadingSpinner />
-          </div>
-        </Card.Body>
-      )} */}
+      {error && <ReactModal heading={"Backend fetch failed"} error={error} save={false} clear={clearError} />}
       {loadedMHMs && loadedSOs && loadedJobs && (
         <React.Fragment>
           <JobCard style={{ margin: '5px' }} jobs={loadedJobs} />

@@ -9,6 +9,7 @@ import {
 import Dashboard from './dashboard/pages/Dashboard';
 import CreateJob from './create/CreateJob';
 import CreateTag from './create/CreateTag';
+import Footer from './shared/components/UIElements/Footer';
 import Navigation from './shared/components/Navigation/Navigation';
 import Auth from './auth/pages/Auth';
 
@@ -55,6 +56,7 @@ const App = () => {
         <Navigation />
         <main>{routes}</main>
       </Router>
+      <Footer />
     </AuthContext.Provider>
   );
 };

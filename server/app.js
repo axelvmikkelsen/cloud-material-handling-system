@@ -67,7 +67,7 @@ mongoose
       lifecycle.initLifecycle();
    })
    .catch(err => {
-      console.log('SOMETHING HAPPENED!',err)
+      console.log('SOMETHING HAPPENED!\n',err)
    });
 
    //create tag 15 and 9

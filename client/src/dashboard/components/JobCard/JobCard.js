@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Card, Tab, Tabs, Button } from 'react-bootstrap';
+import { Card, Tab, Tabs } from 'react-bootstrap';
 
 import JobTable from '../Jobtable';
 
@@ -13,7 +13,7 @@ const JobCard = (props) => {
 
   const [loadedJobs, setLoadedJobs] = useState();
 
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const { isLoading, sendRequest } = useHttpClient();
 
   let url = '/jobs/table/' + jobKey;
 
@@ -29,7 +29,7 @@ const JobCard = (props) => {
       }
     };
     requestJob();
-  }, [sendRequest, jobKey]);
+  }, [sendRequest, jobKey, url]);
 
   return (
     <Card
