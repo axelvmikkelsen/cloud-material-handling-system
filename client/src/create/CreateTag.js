@@ -39,7 +39,6 @@ const CreateTag = () => {
       url = '/so';
     }
     if (body.type === 'mhm') {
-      console.log('The url is mhm');
       url = '/mhm';
     }
 

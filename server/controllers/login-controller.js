@@ -15,7 +15,6 @@ const signup = async (req, res, next) => {
       const error = new HttpError('User already exists, please log in', 500);
       return next(error);
     }
-    console.log('Working here');
     let hashedPassword;
     try {
       hashedPassword = await bcrypt.hash(password, 12);
@@ -26,7 +25,6 @@ const signup = async (req, res, next) => {
       );
       return next(error);
     }
-    console.log('Here too??');
     createdUser = new UserObject({
       email,
       password: hashedPassword,
@@ -39,20 +37,17 @@ const signup = async (req, res, next) => {
   try {
     await createdUser.save();
   } catch (err) {
-    // console.log('User creation failed', err);
     const error = HttpError('Creating user failed, please try again', 500);
     return next(error);
   }
 
   let token;
   try {
-    console.log('Is there a problem here?');
     token = jwt.sign(
       { userId: createdUser.id, email: createdUser.email },
       process.env.JWT_KEY,
       { expiresIn: '1h' }
     );
-    console.log('NO');
   } catch (err) {
     const error = new HttpError('User signup failed, an error occured', 500);
     return next(error);

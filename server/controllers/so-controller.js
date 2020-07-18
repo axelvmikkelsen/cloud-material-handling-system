@@ -6,7 +6,6 @@ const SmartObject = require('../models/so');
 
 const getSmartObjects = async (req, res, next) => {
   let smartobjects;
-  console.log('Request made')
   try {
     smartobjects = await SmartObject.find({});
   } catch (err) {

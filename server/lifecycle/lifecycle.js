@@ -16,19 +16,15 @@ let zones;
 
 const initLifecycle = async () => {
   zones = await staticZones.getZones();
-  console.log('Everything is up and running');
-  // await assignmentEngine.init();
 };
 
 const toggleMqtt = (req, res, next) => {
   const status = req.body.mqttstatus;
   try {
     if (status === 'activate') {
-      console.log('Activating')
       iot.runMqtt(triggerDbUpdate);
     } 
     if (status === 'shutdown') {
-      console.log('Shutting down')
       iot.disconnectMqtt();
     }
     res.json({ success: true });
@@ -41,11 +37,9 @@ const toggleAE = async (req, res, next) => {
   const status = req.body.aestatus;
   try {
     if (status === 'activate') {
-      console.log('Activating Assignment Engine');
       await assignmentEngine.init();
     }
     if (status === 'shutdown') {
-      console.log('Shutting down assignment engine');
       assignmentEngine.shutdown();
     }
     res.json({ success: status })
@@ -150,7 +144,6 @@ const jobHandler = async (tagObject) => {
 
   if (jobObject.workstatus === 'pick-up') {
     distance = measures.euclideanDistance(jobObject.from, tagObject.location);
-    // console.log('pick-up', distance);
     if (distance <= 500) {
       jobObject.workstatus = 'delivering';
       tagObject.workstatus = 'delivering';

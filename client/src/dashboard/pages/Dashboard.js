@@ -21,6 +21,8 @@ const Dashboard = () => {
 
   const [assignmentIsActive, setAssignmentIsActive] = useState(false);
 
+  let dbRefreshInterval;
+
   useEffect(() => {
     getDataFunctions.requestDashboardData(
       setLoadedSOs,
@@ -28,7 +30,7 @@ const Dashboard = () => {
       setLoadedJobs,
       sendRequest
     );
-    const dbRefreshInterval = setInterval(
+    dbRefreshInterval = setInterval(
       () => {
         getDataFunctions.requestDashboardData(
           setLoadedSOs,
@@ -36,12 +38,10 @@ const Dashboard = () => {
           setLoadedJobs,
           sendRequest
         );
-        console.log('Refreshing');
       },
 
       10000
     );
-    // clearInterval(dbRefreshInterval);
     return () => clearInterval(dbRefreshInterval);
   }, [sendRequest]);
 
@@ -80,7 +80,6 @@ const Dashboard = () => {
       );
       if (response.success) {
         if (status === 'activate') {
-          console.log('It activae now');
           setAssignmentIsActive(true);
         }
         if (status === 'shutdown') {

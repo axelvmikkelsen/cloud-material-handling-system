@@ -14,7 +14,6 @@ const runMqtt = (triggerDbUpdate) => {
   
   // mqtt error calback
   mqttClient.on('error', (err) => {
-    console.log('err')
     console.log(err);
     mqttClient.end();
   });
@@ -35,12 +34,6 @@ const runMqtt = (triggerDbUpdate) => {
     let messageString = JSON.parse(message);
     messageString.map((msg) => triggerDbUpdate(msg))
   });
-
-
-
-  // app.listen(8080, () => {
-  //   console.log('Listening on port 8080');
-  // });
 };
 
 const disconnectMqtt = () => {

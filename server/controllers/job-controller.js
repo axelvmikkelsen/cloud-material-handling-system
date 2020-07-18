@@ -95,7 +95,6 @@ const getJobById = async (req, res, next) => {
 
 const assignJob = async (req, res, next) => {
   const { jobid, mhmid } = req.body;
-  console.log('Working on it');
   let job;
   try {
     job = await JobObject.findById(jobid);

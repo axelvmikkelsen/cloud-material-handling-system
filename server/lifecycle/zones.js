@@ -12,9 +12,7 @@ const getZones = async () => {
    if (!zns) {
      throw new HttpError('No zones found, please try again', 422);
    }
-   //console.log(zns)
    return zns
-   //return { zones: zns.map((zone) => zone.toObject({ getters: true })) };
 }
 
 exports.getZones = getZones;

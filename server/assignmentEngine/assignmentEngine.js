@@ -13,7 +13,6 @@ let assignInterval;
 const init = async () => {
   jobStack = await findAllUnassigned();
   assignInterval = setInterval(() => assignJobs(jobStack), 15000);
-  console.log('Assignment engine started');
 };
 
 const shutdown = () => {
@@ -27,13 +26,10 @@ const findAllUnassigned = async () => {
 };
 
 const assignJobs = async (jobStack) => {
-  // console.log('Assigning jobs')
   const checkJobs = await findAllUnassigned();
-  console.log(checkJobs);
   if (checkJobs !== jobStack) {
     jobStack = checkJobs;
   }
-  // console.log('Still going')
   for (let i = 0; i < jobStack.length; i++) {
     await findCandidate(jobStack[i]);
   }
@@ -96,8 +92,6 @@ const findCandidate = async (job) => {
     throw new HttpError('Could not find the best mhm candidate');
   }
 
-  console.log('Found a suitable candidate!', mhm);
-
   try {
     job.mhm = bestCandidate.mhmid;
     job.status = 'assigned';
@@ -110,14 +104,11 @@ const findCandidate = async (job) => {
   }
 
   try {
-    console.log('Trying to save job', job);
-    console.log('Trying to save mhm', mhm);
     const session = await mongoose.startSession();
     session.startTransaction();
     await job.save({ session: session });
     await mhm.save({ session: session });
     await session.commitTransaction();
-    console.log('Assigned job successfully');
   } catch (err) {
     throw new HttpError(
       'Could not save after assigning job, something went wrong',
