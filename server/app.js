@@ -1,21 +1,14 @@
-const express = require('express');
-
-const app = express();
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const fs = require('fs');
 const path = require('path');
 
-// const iot = require('./mqtt/mqtt');
-// const io = null;
-
-// const http = require('http').Server(app);
-// const io = require('socket.io')(http);
-// const cors = require('cors');
-// app.use(cors);
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const lifecycle = require('./lifecycle/lifecycle');
-
 const HttpError = require('./models/http-error');
+
+const app = express();
 
 const jobRoutes = require('./routes/job-routes');
 const mhmRoutes = require('./routes/mhm-routes');
@@ -26,7 +19,7 @@ const loginRoutes = require('./routes/login-routes.js');
 
 app.use(bodyParser.json()); // Parses all incoming data for POST requests.
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'client/build)')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Setting headers to allow browser to access backend
 app.use((req, res, next) => {
@@ -48,8 +41,24 @@ app.use('/api/lifecycle', lifecycleRoutes);
 app.use('/api/login', loginRoutes);
 
 app.use((req, res, next) => {
-  throw new HttpError('Could not find this route', 404);
-});
+   const error = new HttpError('Could not find this route', 404);
+   throw error;
+ });
+ 
+ // Error handling Middleware
+ app.use((error, req, res, next) => {
+    if (req.file) {
+       fs.unlink(req.file.path, (err) => {
+          console.log(err);
+       });
+    }
+   if (res.headerSent) {
+     // Checks if the headers have already been sent as response, not needed once more
+     return next(error);
+   }
+   res.status(error.code || 500);
+   res.json({ message: error.message || 'An unkown error occured' });
+ });
 
 const connectURL = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-jz0r0.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
