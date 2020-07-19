@@ -49,4 +49,4 @@ const requestDashboardData = async (
   }
 };
 
-exports.requestDashboardData = requestDashboardData;
+export default requestDashboardData;
