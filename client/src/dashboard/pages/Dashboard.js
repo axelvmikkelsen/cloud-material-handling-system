@@ -7,7 +7,7 @@ import JobCard from '../components/JobCard/JobCard';
 
 import ReactModal from '../../shared/components/UIElements/ReactModal';
 
-import requestDashboardData from '../getDataFunctions/getDataFunctions';
+import getDataFunctions from '../getDataFunctions/getDataFunctions';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 
 const Dashboard = () => {
@@ -24,7 +24,7 @@ const Dashboard = () => {
   let dbRefreshInterval;
 
   useEffect(() => {
-    requestDashboardData.requestDashboardData(
+    getDataFunctions(
       setLoadedSOs,
       setLoadedMHMs,
       setLoadedJobs,
@@ -32,7 +32,7 @@ const Dashboard = () => {
     );
     dbRefreshInterval = setInterval(
       () => {
-        requestDashboardData.requestDashboardData(
+        getDataFunctions(
           setLoadedSOs,
           setLoadedMHMs,
           setLoadedJobs,

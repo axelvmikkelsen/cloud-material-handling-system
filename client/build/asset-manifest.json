@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/static/css/main.33896f06.chunk.css",
+    "main.js": "/static/js/main.0c0348e7.chunk.js",
+    "main.js.map": "/static/js/main.0c0348e7.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.59a6a914.js",
+    "runtime-main.js.map": "/static/js/runtime-main.59a6a914.js.map",
+    "static/js/2.ea5fa579.chunk.js": "/static/js/2.ea5fa579.chunk.js",
+    "static/js/2.ea5fa579.chunk.js.map": "/static/js/2.ea5fa579.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.c1a3b283b1960dba9deac562b2304ba3.js": "/precache-manifest.c1a3b283b1960dba9deac562b2304ba3.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.33896f06.chunk.css.map": "/static/css/main.33896f06.chunk.css.map",
+    "static/js/2.ea5fa579.chunk.js.LICENSE.txt": "/static/js/2.ea5fa579.chunk.js.LICENSE.txt",
+    "static/media/ntnu_logo.png": "/static/media/ntnu_logo.9b4c0ba4.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.59a6a914.js",
+    "static/js/2.ea5fa579.chunk.js",
+    "static/css/main.33896f06.chunk.css",
+    "static/js/main.0c0348e7.chunk.js"
+  ]
+}
