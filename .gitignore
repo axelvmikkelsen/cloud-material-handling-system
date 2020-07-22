@@ -2,6 +2,7 @@
 /client/package-lock.json
 
 /server/nodemon.json
+/server/.env
 /server/node_modules
 /server/package-lock.json
 /server/.vscode

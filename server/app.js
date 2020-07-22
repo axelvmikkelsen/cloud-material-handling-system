@@ -41,9 +41,13 @@ app.use('/api/lifecycle', lifecycleRoutes);
 app.use('/api/login', loginRoutes);
 
 app.use((req, res, next) => {
-   const error = new HttpError('Could not find this route', 404);
-   throw error;
- });
+   res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
+
+// app.use((req, res, next) => {
+//    const error = new HttpError('Could not find this route', 404);
+//    throw error;
+//  });
  
  // Error handling Middleware
  app.use((error, req, res, next) => {
