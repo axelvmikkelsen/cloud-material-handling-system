@@ -3,6 +3,7 @@ const mqtt = require('mqtt');
 const host = process.env.MQTT_HOST;
 const username = process.env.MQTT_USERNAME; // mqtt credentials if these are needed to connect
 const password = process.env.MQTT_PASSWORD;
+
 let mqttClient = null;
 
 const runMqtt = (triggerDbUpdate) => {

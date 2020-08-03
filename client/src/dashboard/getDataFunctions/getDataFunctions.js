@@ -5,8 +5,10 @@ const requestSOs = async (setLoadedSOs, sendRequest) => {
     );
 
     setLoadedSOs(responseData);
+    return true;
   } catch (err) {
     console.log('Could not fetch SOs');
+    return false;
   }
 };
 
@@ -17,8 +19,10 @@ const requestMHMs = async (setLoadedMHMs, sendRequest) => {
     );
 
     setLoadedMHMs(responseData);
+    return true;
   } catch (err) {
     console.log('Could not fetch MHMs', err);
+    return false;
   }
 };
 
@@ -29,8 +33,10 @@ const requestJobs = async (setLoadedJobs, sendRequest) => {
     );
 
     setLoadedJobs(responseData);
+    return true;
   } catch (err) {
     console.log('Could not fetch Jobs');
+    return false;
   }
 };
 
@@ -41,9 +47,13 @@ const requestDashboardData = async (
   sendRequest
 ) => {
   try {
-    await requestSOs(setLoadedSOs, sendRequest);
-    await requestMHMs(setLoadedMHMs, sendRequest);
-    await requestJobs(setLoadedJobs, sendRequest);
+    const stat1 = await requestSOs(setLoadedSOs, sendRequest);
+    const stat2 = await requestMHMs(setLoadedMHMs, sendRequest);
+    const stat3 = await requestJobs(setLoadedJobs, sendRequest);
+    if (stat1 && stat2 && stat3) {
+      return 'success';
+    }
+    return 'failed';
   } catch (err) {
     console.log('[requestDashboardData], An error occured', err);
   }

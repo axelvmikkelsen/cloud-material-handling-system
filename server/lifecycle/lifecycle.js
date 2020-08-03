@@ -199,6 +199,21 @@ const logMessage = (tagObject, message) => {
   }
 };
 
+const getServerStatus = async (req, res, next) => {
+  let state;
+  try {
+    state = mongoose.connection.readyState;
+  } catch (err) {
+    throw new HttpError('Something went wrong when getting server status', 500);
+  }
+  res.status(200).json({ success: true, state })
+}
+
+const getMqttStatus = async (req, res, next) => {
+  let state;
+}
+
 exports.initLifecycle = initLifecycle;
 exports.toggleMqtt = toggleMqtt;
 exports.toggleAE = toggleAE;
+exports.getServerStatus = getServerStatus;

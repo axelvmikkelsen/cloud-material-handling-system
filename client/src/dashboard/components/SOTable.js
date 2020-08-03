@@ -28,7 +28,7 @@ const SOTable = (props) => {
   const content = { objects: objects, headers: headers}
 
   return (
-    <Card className="text-left">
+    <Card className="text-left shadow-sm p-3 mb-5 bg-white rounded">
       <Card.Body>
         <Card.Title>{props.title}</Card.Title>
         <Card.Text>{props.description}</Card.Text>

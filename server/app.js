@@ -19,7 +19,6 @@ const loginRoutes = require('./routes/login-routes.js');
 
 app.use(bodyParser.json()); // Parses all incoming data for POST requests.
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Setting headers to allow browser to access backend
 app.use((req, res, next) => {
@@ -32,55 +31,48 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use('/api/mhm', mhmRoutes);
 app.use('/api/so', soRoutes);
 app.use('/api/jobs', jobRoutes);
-app.use('/api/map', mapRoutes)
+app.use('/api/map', mapRoutes);
 app.use('/api/lifecycle', lifecycleRoutes);
 app.use('/api/login', loginRoutes);
 
 app.use((req, res, next) => {
-   res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+  const error = new HttpError('Could not find this route', 404);
+  throw error;
 });
 
-// app.use((req, res, next) => {
-//    const error = new HttpError('Could not find this route', 404);
-//    throw error;
-//  });
- 
- // Error handling Middleware
- app.use((error, req, res, next) => {
-    if (req.file) {
-       fs.unlink(req.file.path, (err) => {
-          console.log(err);
-       });
-    }
-   if (res.headerSent) {
-     // Checks if the headers have already been sent as response, not needed once more
-     return next(error);
-   }
-   res.status(error.code || 500);
-   res.json({ message: error.message || 'An unkown error occured' });
- });
+// Error handling Middleware
+app.use((error, req, res, next) => {
+  if (req.file) {
+    fs.unlink(req.file.path, (err) => {
+      console.log(err);
+    });
+  }
+  if (res.headerSent) {
+    // Checks if the headers have already been sent as response, not needed once more
+    return next(error);
+  }
+  res.status(error.code || 500);
+  res.json({ message: error.message || 'An unkown error occured' });
+});
 
 const connectURL = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-jz0r0.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
-const connectConfig = { 
-   useNewUrlParser: true, 
-   useUnifiedTopology: true, 
-   useCreateIndex: true 
-   }
+const connectConfig = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+};
 
 mongoose
-   .connect(connectURL)
-   .then(() => {
-      console.log('Connected to database!');
-      app.listen(5000);
-      lifecycle.initLifecycle();
-   })
-   .catch(err => {
-      console.log('SOMETHING HAPPENED!\n',err)
-   });
-
-   //create tag 15 and 9
+  .connect(connectURL)
+  .then(() => {
+    console.log('Connected to database!');
+    app.listen(5000);
+    lifecycle.initLifecycle();
+  })
+  .catch((err) => {
+    console.log('SOMETHING HAPPENED!\n', err);
+  });

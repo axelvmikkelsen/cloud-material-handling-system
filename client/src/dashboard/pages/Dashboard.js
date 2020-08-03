@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardDeck, Button } from 'react-bootstrap';
+import { Card, CardDeck, Button, Container, Row, Col } from 'react-bootstrap';
 
 import SOTable from '../components/SOTable';
 import MHMTable from '../components/MHMTable';
 import JobCard from '../components/JobCard/JobCard';
+import InfoTable from '../components/InfoTable';
 
 import ReactModal from '../../shared/components/UIElements/ReactModal';
 
@@ -21,27 +22,19 @@ const Dashboard = () => {
 
   const [assignmentIsActive, setAssignmentIsActive] = useState(false);
 
-  let dbRefreshInterval;
-
   useEffect(() => {
-    getDataFunctions(
-      setLoadedSOs,
-      setLoadedMHMs,
-      setLoadedJobs,
-      sendRequest
-    );
-    dbRefreshInterval = setInterval(
-      () => {
-        getDataFunctions(
-          setLoadedSOs,
-          setLoadedMHMs,
-          setLoadedJobs,
-          sendRequest
-        );
-      },
-
-      10000
-    );
+    getDataFunctions(setLoadedSOs, setLoadedMHMs, setLoadedJobs, sendRequest);
+    const dbRefreshInterval = setInterval(async () => {
+      const status = await getDataFunctions(
+        setLoadedSOs,
+        setLoadedMHMs,
+        setLoadedJobs,
+        sendRequest
+      );
+      if (status === 'failed') {
+        clearInterval(dbRefreshInterval);
+      }
+    }, 100000);
     return () => clearInterval(dbRefreshInterval);
   }, [sendRequest]);
 
@@ -152,7 +145,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Card border="light">
+      <Card style={{ border: 'none'}}>
         <Card.Body>
           <div style={{ width: '100%', overflow: 'hidden' }}>
             <div style={{ width: '80%', float: 'left' }}>
@@ -169,14 +162,31 @@ const Dashboard = () => {
           <hr style={{ marginTop: '20px', align: 'center', width: '99.7%' }} />
         </Card.Body>
       </Card>
-      {error && <ReactModal heading={"Backend fetch failed"} error={error} save={false} clear={clearError} />}
+      {error && (
+        <ReactModal
+          heading={'Backend fetch failed'}
+          error={error}
+          save={false}
+          clear={clearError}
+        />
+      )}
       {loadedMHMs && loadedSOs && loadedJobs && (
         <React.Fragment>
-          <JobCard style={{ margin: '5px' }} jobs={loadedJobs} />
+          <CardDeck >
+              <Col sm={9}>
+                <JobCard style={{ margin: '5px' }} jobs={loadedJobs} />
+              </Col>
+              <Col sm={3}>
+                <InfoTable />
+              </Col>
+          </CardDeck>
+
           <CardDeck style={{ margin: '5px', marginBottom: '15px' }}>
             <SOTable
               title={'Smart Objects'}
-              description={'Objects to be picked up and delivered at specified locations.'}
+              description={
+                'Objects to be picked up and delivered at specified locations.'
+              }
               content={loadedSOs}
             />
             <MHMTable
