@@ -22,7 +22,9 @@ const toggleMqtt = (req, res, next) => {
   const status = req.body.mqttstatus;
   try {
     if (status === 'activate') {
+      console.log('trying to run it')
       iot.runMqtt(triggerDbUpdate);
+      console.log('Is it ever getting out?')
     } 
     if (status === 'shutdown') {
       iot.disconnectMqtt();
@@ -52,7 +54,7 @@ const triggerDbUpdate = async (message) => {
   const { tagId, timestamp, data } = message;
 
   const tagObject = await helper.findTag(tagId);
-
+  console.log('Coordinates', data.coordinates)
   await updateLocationAndZone(tagObject, data.coordinates, timestamp-(2*60*60));
   setTimeout(async () => {
     await jobHandler(tagObject);
@@ -66,7 +68,12 @@ const triggerDbUpdate = async (message) => {
 };
 
 const updateLocationAndZone = async (tagObject, coord, timestamp) => {
-  const distanceMoved = measures.euclideanDistance(tagObject.location, coord);
+  let distanceMoved;
+  try {
+    distanceMoved = measures.euclideanDistance(tagObject.location, coord);
+  } catch (err) {
+    throw new HttpError('The error occured because a field couldnt be accessed, there is a database mismatch', 422);
+  }
   // If the tag hasn't moved since last message, no update
   // if (distanceMoved <= 50) {
   //   return;

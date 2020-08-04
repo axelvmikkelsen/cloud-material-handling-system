@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardDeck, Button, Container, Row, Col } from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Card, CardDeck, Button, Col} from 'react-bootstrap';
 
 import SOTable from '../components/SOTable';
 import MHMTable from '../components/MHMTable';
 import JobCard from '../components/JobCard/JobCard';
-import InfoTable from '../components/InfoTable';
+import InfoTable from '../components/InfoTable/InfoTable';
 
 import ReactModal from '../../shared/components/UIElements/ReactModal';
 
@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [loadedSOs, setLoadedSOs] = useState();
   const [loadedMHMs, setLoadedMHMs] = useState();
   const [loadedJobs, setLoadedJobs] = useState();
+  const [loadedTableData, setLoadedTableData] = useState();
 
   const { error, sendRequest, clearError } = useHttpClient();
 
@@ -23,19 +24,14 @@ const Dashboard = () => {
   const [assignmentIsActive, setAssignmentIsActive] = useState(false);
 
   useEffect(() => {
-    getDataFunctions(setLoadedSOs, setLoadedMHMs, setLoadedJobs, sendRequest);
-    const dbRefreshInterval = setInterval(async () => {
-      const status = await getDataFunctions(
-        setLoadedSOs,
-        setLoadedMHMs,
-        setLoadedJobs,
-        sendRequest
-      );
-      if (status === 'failed') {
-        clearInterval(dbRefreshInterval);
-      }
-    }, 100000);
-    return () => clearInterval(dbRefreshInterval);
+    getDataFunctions(
+      setLoadedSOs,
+      setLoadedMHMs,
+      setLoadedJobs,
+      setLoadedTableData,
+      sendRequest
+    );
+    return;
   }, [sendRequest]);
 
   const fireMqttConnection = async (status) => {
@@ -143,24 +139,47 @@ const Dashboard = () => {
     );
   }
 
+  const buttonGroup = (
+    <div>
+      <div style={{ paddingBottom: '10px' }}>{mqttButton}</div>
+      <div style={{ paddingBottom: '10px' }}>{aebutton}</div>
+    </div>
+  );
+
+  let intervalId;
+
+  const dbRefreshInterval = async () => {
+    try {
+      const status = await getDataFunctions(
+        setLoadedSOs,
+        setLoadedMHMs,
+        setLoadedJobs,
+        setLoadedTableData,
+        sendRequest
+      );
+      if (status === 'failed') {
+        clearInterval(intervalId);
+      }
+      console.log('refreshed')
+    } catch (err) {}
+  };
+
+  const triggerAutoRefresh = (autoRefresh, setAutoRefresh) => {
+    if (autoRefresh) {
+      clearInterval(intervalId);
+      setAutoRefresh(false);
+      return
+    }
+    intervalId = setInterval(dbRefreshInterval, 10000);
+    setAutoRefresh(true);
+    console.log('interval started');
+    return;
+  };
+
   return (
     <div>
-      <Card style={{ border: 'none'}}>
-        <Card.Body>
-          <div style={{ width: '100%', overflow: 'hidden' }}>
-            <div style={{ width: '80%', float: 'left' }}>
-              <h1>Dashboard</h1>
-            </div>
-            <div style={{ marginLeft: '150px', marginBottom: '5px' }}>
-              {mqttButton}
-            </div>
-            <div style={{ marginLeft: '150px', marginTop: '5px' }}>
-              {aebutton}
-            </div>
-          </div>
-
-          <hr style={{ marginTop: '20px', align: 'center', width: '99.7%' }} />
-        </Card.Body>
+      <Card style={{ border: 'none' }}>
+        <Card.Body />
       </Card>
       {error && (
         <ReactModal
@@ -170,15 +189,20 @@ const Dashboard = () => {
           clear={clearError}
         />
       )}
-      {loadedMHMs && loadedSOs && loadedJobs && (
+      {loadedMHMs && loadedSOs && loadedJobs && loadedTableData && (
         <React.Fragment>
-          <CardDeck >
-              <Col sm={9}>
-                <JobCard style={{ margin: '5px' }} jobs={loadedJobs} />
-              </Col>
-              <Col sm={3}>
-                <InfoTable />
-              </Col>
+          <CardDeck>
+            <Col sm={9}>
+              <JobCard style={{ margin: '5px' }} jobs={loadedJobs} />
+            </Col>
+            <Col sm={3}>
+              <InfoTable
+                isactive={mqttIsActive}
+                server={loadedTableData.state}
+                buttonGroup={buttonGroup}
+                triggerAutoRefresh={triggerAutoRefresh}
+              />
+            </Col>
           </CardDeck>
 
           <CardDeck style={{ margin: '5px', marginBottom: '15px' }}>

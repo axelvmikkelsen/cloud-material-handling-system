@@ -10,12 +10,15 @@ const HttpError = require('./models/http-error');
 
 const app = express();
 
+const mqtt = require('./mqtt/mqtt');
+
 const jobRoutes = require('./routes/job-routes');
 const mhmRoutes = require('./routes/mhm-routes');
 const soRoutes = require('./routes/so-routes');
 const mapRoutes = require('./routes/map-routes');
 const lifecycleRoutes = require('./routes/lifecycle-routes');
 const loginRoutes = require('./routes/login-routes.js');
+const advancedRoutes = require('./routes/advanced-routes');
 
 app.use(bodyParser.json()); // Parses all incoming data for POST requests.
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,6 +40,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/lifecycle', lifecycleRoutes);
 app.use('/api/login', loginRoutes);
+app.use('/api/advanced', advancedRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError('Could not find this route', 404);
