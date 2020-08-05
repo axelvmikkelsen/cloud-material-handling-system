@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardDeck, Button, Col} from 'react-bootstrap';
 
 import SOTable from '../components/SOTable';
@@ -172,7 +172,6 @@ const Dashboard = () => {
     }
     intervalId = setInterval(dbRefreshInterval, 10000);
     setAutoRefresh(true);
-    console.log('interval started');
     return;
   };
 

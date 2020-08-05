@@ -33,7 +33,7 @@ const JobCard = (props) => {
 
   return (
     <Card
-      style={{ marginLeft: '20px', marginRight: '20px', marginBottom: '25px' }}
+      style={{ marginLeft: '20px', marginRight: '20px', marginBottom: '25px', borderRadius: '6px' }}
     >
       <Card.Header>
         <Card.Title>Jobs</Card.Title>
