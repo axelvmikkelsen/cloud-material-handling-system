@@ -11,5 +11,7 @@ router.post('/:grid_id/create_zone', mapController.createZone);
 
 router.get('/:grid_id/zones', mapController.getZonesByGridId);
 
+router.post('/create_map', mapController.createMap);
+
 
 module.exports = router;
