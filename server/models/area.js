@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // (0,0) --> Top left
-const zoneSchema = new Schema({
+const areaSchema = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   xstart: { type: Number, required: true },
@@ -13,4 +13,4 @@ const zoneSchema = new Schema({
   grid: { type: mongoose.Types.ObjectId, required: true, ref: 'Grid' },
 });
 
-module.exports = mongoose.model('Zone', zoneSchema);
+module.exports = mongoose.model('Area', areaSchema);

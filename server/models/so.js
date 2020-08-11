@@ -15,7 +15,7 @@ const soSchema = new Schema({
     y: { type: Number },
   },
   lastseen: { type: Number },
-  zone: { type: String },
+  area: { type: String },
   description: { type: String, required: true },
 });
 

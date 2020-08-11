@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.post('/create_grid', mapController.createGrid);
 
-router.post('/:grid_id/create_zone', mapController.createZone);
+router.post('/:grid_id/create_area', mapController.createArea);
 
-router.get('/:grid_id/zones', mapController.getZonesByGridId);
+router.get('/:grid_id/areas', mapController.getAreasByGridId);
 
 router.post('/create_map', mapController.createMap);
 

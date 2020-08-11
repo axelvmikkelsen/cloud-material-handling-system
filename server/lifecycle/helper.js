@@ -26,11 +26,11 @@ const findTag = async (tagId) => {
    return tagObject;
  };
 
- const classifyZone = (zones, coord) => {
-   return zones.filter((zone) => {
+ const classifyArea = (areas, coord) => {
+   return areas.filter((area) => {
      let ret = 0;
-     if (zone.xstart < coord.x && zone.ystart < coord.y) {
-       if (zone.xend > coord.x && zone.yend > coord.y) {
+     if (area.xstart < coord.x && area.ystart < coord.y) {
+       if (area.xend > coord.x && area.yend > coord.y) {
          ret = 1;
        }
      }
@@ -45,5 +45,5 @@ const findTag = async (tagId) => {
  
 
  exports.findTag = findTag;
- exports.classifyZone = classifyZone;
+ exports.classifyArea = classifyArea;
  exports.timestampToDateTime = timestampToDateTime;

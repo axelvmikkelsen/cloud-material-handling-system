@@ -8,9 +8,9 @@ const mapSchema = new Schema({
   active: { type: Boolean, default: false},
   description: { type: String, required: true },
   grid: { type: mongoose.Types.ObjectId, required: true },
-  zones: [
+  areas: [
     {
-      zonecollection: [{ zone: { type: mongoose.Types.ObjectId } }],
+      areacollection: [{ area: { type: mongoose.Types.ObjectId } }],
     },
   ],
 });

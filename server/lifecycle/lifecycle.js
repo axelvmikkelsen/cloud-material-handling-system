@@ -1,4 +1,4 @@
-const staticZones = require('./zones');
+const staticAreas = require('./areas');
 const HttpError = require('../models/http-error');
 const mongoose = require('mongoose');
 
@@ -12,10 +12,10 @@ const helper = require('./helper');
 
 const assignmentEngine = require('../assignmentEngine/assignmentEngine');
 
-let zones;
+let areas;
 
 const initLifecycle = async () => {
-  zones = await staticZones.getZones();
+  areas = await staticAreas.getAreas();
 };
 
 const toggleMqtt = (req, res, next) => {
@@ -55,7 +55,7 @@ const triggerDbUpdate = async (message) => {
 
   const tagObject = await helper.findTag(tagId);
   console.log('Coordinates', data.coordinates)
-  await updateLocationAndZone(tagObject, data.coordinates, timestamp-(2*60*60));
+  await updateLocationAndArea(tagObject, data.coordinates, timestamp-(2*60*60));
   setTimeout(async () => {
     await jobHandler(tagObject);
   }, 500);
@@ -67,7 +67,7 @@ const triggerDbUpdate = async (message) => {
   }
 };
 
-const updateLocationAndZone = async (tagObject, coord, timestamp) => {
+const updateLocationAndArea = async (tagObject, coord, timestamp) => {
   let distanceMoved;
   try {
     distanceMoved = measures.euclideanDistance(tagObject.location, coord);
@@ -78,15 +78,15 @@ const updateLocationAndZone = async (tagObject, coord, timestamp) => {
   // if (distanceMoved <= 50) {
   //   return;
   // }
-  let zone = helper.classifyZone(zones, coord);
-  if (!zone) {
-    zone = {name: 'NaN'}
+  let area = helper.classifyArea(areas, coord);
+  if (!area) {
+    area = {name: 'NaN'}
   }
 
   try {
     tagObject.location.x = coord.x;
     tagObject.location.y = coord.y;
-    tagObject.zone = zone.name;
+    tagObject.area = area.name;
     tagObject.lastseen = Math.round(timestamp)
   } catch (err) {
     throw new HttpError('Fields for the tags could not be retrieved', 500);

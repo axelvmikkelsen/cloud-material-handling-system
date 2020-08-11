@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 
 const HttpError = require('../models/http-error');
 const GridObject = require('../models/grid');
-const ZoneObject = require('../models/zone');
+const AreaObject = require('../models/area');
 const MapObject = require('../models/map');
-const { create } = require('../models/zone');
+const { create } = require('../models/area');
 
 const createGrid = async (req, res, next) => {
   const { name, xend, yend } = req.body;
@@ -32,7 +32,7 @@ const createGrid = async (req, res, next) => {
   res.status(201).json({ name });
 };
 
-const createZone = async (req, res, next) => {
+const createArea = async (req, res, next) => {
   const { name, description, xstart, xend, ystart, yend } = req.body;
   const gridId = req.params.grid_id;
 
@@ -46,15 +46,15 @@ const createZone = async (req, res, next) => {
   try {
     grid = await GridObject.findById(gridId);
   } catch (err) {
-    return next(new HttpError('Creating zone failed', 500));
+    return next(new HttpError('Creating area failed', 500));
   }
 
   if (!grid) {
     return next(new HttpError('Could not find grid for specified id', 404));
   }
-  let createdZone;
+  let createdArea;
   try {
-    createdZone = new ZoneObject({
+    createdArea = new AreaObject({
       name,
       description,
       xstart,
@@ -63,31 +63,31 @@ const createZone = async (req, res, next) => {
       yend,
       grid: gridId,
     });
-    createdZone.save();
+    createdArea.save();
   } catch (err) {
-    return next(new HttpError('Creating zone failed, please try again', 500));
+    return next(new HttpError('Creating area failed, please try again', 500));
   }
 
-  res.status(201).json({ zone: createdZone });
+  res.status(201).json({ area: createdArea });
 };
 
-const getZonesByGridId = async (req, res, next) => {
+const getAreasByGridId = async (req, res, next) => {
   const gridId = req.params.grid_id;
 
-  let zones;
+  let areas;
   try {
-    zones = await ZoneObject.find({ grid: gridId });
+    areas = await Areabject.find({ grid: gridId });
   } catch (err) {
     return next(
-      new HttpError('Could not retrieve zones, an error occured', 500)
+      new HttpError('Could not retrieve areas, an error occured', 500)
     );
   }
 
-  if (!zones) {
-    return next(new HttpError('No zones found, please try again', 422));
+  if (!areas) {
+    return next(new HttpError('No areas found, please try again', 422));
   }
 
-  res.json({ zones: zones.map((zone) => zone.toObject({ getters: true })) });
+  res.json({ areas: areas.map((area) => area.toObject({ getters: true })) });
 };
 
 const getActiveMap = async (req, res, next) => {
@@ -154,7 +154,7 @@ const setActiveMap = async (req, res, next) => {
 
 const createMap = async (req, res, next) => {
 
-  const { name, description, gridId, zonesObject } = req.body;
+  const { name, description, gridId, areasObject } = req.body;
 
   let grid;
   try {
@@ -176,7 +176,7 @@ const createMap = async (req, res, next) => {
       name,
       description,
       grid: gridId,
-      zones: []
+      area: []
     });
     createdMap.save();
   } catch (err) {
@@ -188,8 +188,8 @@ const createMap = async (req, res, next) => {
 }
 
 exports.createGrid = createGrid;
-exports.createZone = createZone;
-exports.getZonesByGridId = getZonesByGridId;
+exports.createArea = createArea;
+exports.getAreasByGridId = getAreasByGridId;
 exports.getActiveMap = getActiveMap;
 exports.setActiveMap = setActiveMap;
 exports.createMap = createMap;

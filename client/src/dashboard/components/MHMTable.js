@@ -8,7 +8,7 @@ import timeUtil from '../../shared/util/timeUtil';
 
 const MHMTable = (props) => {
 
-   const headers = ['Tag ID', 'Workstatus', 'Status', 'Zone', 'Last seen']
+   const headers = ['Tag ID', 'Workstatus', 'Status', 'Area', 'Last seen']
 
    const objects = []
 
@@ -19,7 +19,7 @@ const MHMTable = (props) => {
         entry.id = obj.name;
         entry.workstatus = obj.workstatus
         entry.status = obj.status
-        entry.zone = obj.zone;
+        entry.area = obj.area;
         entry.lastseen = timeUtil.timestamptToTimeAgo(obj.lastseen);
       } catch (err) {
         console.log('Something went wrong accessing the array');

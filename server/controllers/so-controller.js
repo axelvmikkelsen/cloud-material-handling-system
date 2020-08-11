@@ -70,7 +70,7 @@ const createSmartObject = async (req, res, next) => {
         y: -1
       },
       description,
-      zone: 'NaN',
+      area: 'NaN',
       lastseen: (Date.now() + (4*60*60*1000))/1000
     });
   } catch (err) {
