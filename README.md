@@ -26,7 +26,7 @@ ___
   * Smart Objects (SO) - Movable object like a small/large box of items or pallet equipped with a Pozyx Tag.
   * Material Handling Module (MHM) - A handler can be an Automated-Guided-Vehicle (AGV), a forklift, or a manual operator with the ability to transport a Smart Object from destination A to destination B.
 
-* Job - A job is generated with a start and end area, for example: **Workshop 1** to **Workshop 2**. When the `Assignment Engine` is active, the most suited MHM for the job is chosen automatically and the job is scheduled.
+* Job - A job is generated with a start and end area, for example: **Workshop 1** to **Workshop 2**. When the `assignment engine` is active, the most suited MHM for the job is chosen automatically and the job is scheduled.
 
 The dashboard retrieves data from the database through exposed URLs from the backend. The user has the ability to connect and disconnect to both the `mqtt`-stream and `assignment engine`.
 
@@ -58,7 +58,7 @@ ___
 
 ___
 
-Tags are activated 
+The Indoor Positioning System is managed through [app.pozyx.io](app.pozyx.io). A layout is entered as a `.png` and the tags are shown live. The `mqtt`-stream sends a message/JSON-object to the CMHS every 10 seconds.
 
 ![pozyx-layout](https://user-images.githubusercontent.com/52491186/90779698-6c9cb000-e2fe-11ea-990f-aca0e3273509.png)
 
@@ -66,7 +66,7 @@ Tags are activated
 
 ___
 
-* MongoDB](https://www.mongodb.com/) - A general purpose NoSQL distributed database solution.
+* [MongoDB](https://www.mongodb.com/) - A general purpose NoSQL distributed database solution.
 * [Express](https://expressjs.com/) - Web framework for Node.js.
 * [React](https://reactjs.org/) - A JavaScript library for building user interfaces.
 * [Node.js](https://nodejs.org/en/) - An open-source JavaScript runtime environment.
