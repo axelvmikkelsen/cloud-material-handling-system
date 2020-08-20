@@ -5,18 +5,55 @@ const HttpError = require('../models/http-error');
 const SmartObject = require('../models/so');
 const MHMObject = require('../models/mhm');
 const JobObject = require('../models/job');
+const AreaObject = require('../models/area');
 
 const createJob = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
       new HttpError(
-        'Invalid inputs passed when creating a Job, please check your input'
+        'Invalid inputs passed when creating a Job, please check your input', 422
       )
     );
   }
 
   const { description, from, destination, soid } = req.body;
+
+  if (from === destination) {
+    return next(
+      new HttpError(
+        'Start and destination area are the same, invalid input', 422
+      )
+    );
+  }
+
+  // Find area coordinates to classify distance
+  let fromArea, toArea, fromCoord, toCoord;
+  try {
+    fromArea = await AreaObject.findById(from);
+    toArea = await AreaObject.findById(destination);
+  } catch (err) {
+    return next(new HttpError('Finding the start and destination areas failed', 500));
+  }
+
+  if (!fromArea || !toArea) {
+    return next(new HttpError('No areas found', 500));
+  }
+
+  try {
+    fromCoord = {
+      x: (fromArea.xend - fromArea.xstart),
+      y: (fromArea.yend - fromArea.ystart)
+    };
+    toCoord = {
+      x: (toArea.xend - toArea.xstart),
+      y: (toArea.yend - toArea.ystart)
+    };
+  } catch (err) {
+    return next(new HttpError('Assigning coordinates to areas failed', 500));
+  }
+
+
 
   let smartObject;
   try {
@@ -37,8 +74,10 @@ const createJob = async (req, res, next) => {
       description,
       status: 'unassigned',
       workstatus: '',
-      from,
-      destination,
+      fromarea: from,
+      toarea: destination,
+      from: fromCoord,
+      destination: toCoord,
       ect: 0,
       duration: 0,
       so: smartObject,

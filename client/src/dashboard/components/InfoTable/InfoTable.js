@@ -18,7 +18,7 @@ const InfoTable = (props) => {
   const output = {
     serverstatus: 'Ye',
     mqttstatus: 'Yo',
-    currentmap: 'Good',
+    currentmap: 'LabConfig2',
   };
 
   let server = (

@@ -22,9 +22,7 @@ const toggleMqtt = (req, res, next) => {
   const status = req.body.mqttstatus;
   try {
     if (status === 'activate') {
-      console.log('trying to run it')
       iot.runMqtt(triggerDbUpdate);
-      console.log('Is it ever getting out?')
     } 
     if (status === 'shutdown') {
       iot.disconnectMqtt();
@@ -54,11 +52,13 @@ const triggerDbUpdate = async (message) => {
   const { tagId, timestamp, data } = message;
 
   const tagObject = await helper.findTag(tagId);
-  console.log('Coordinates', data.coordinates)
-  await updateLocationAndArea(tagObject, data.coordinates, timestamp-(2*60*60));
-  setTimeout(async () => {
+  if (!tagObject) {
+    throw new HttpError('The tag object from MQTT does not match any database entry', 422);
+  }
+  
+  await updateLocationAndArea(tagObject, data.coordinates, timestamp-(2*60*60)).then(async () => {
     await jobHandler(tagObject);
-  }, 500);
+  })
 
   try {
     logMessage(tagObject, message);
@@ -103,12 +103,15 @@ const updateLocationAndArea = async (tagObject, coord, timestamp) => {
 };
 
 const jobHandler = async (tagObject) => {
+  /*
+    Applies to MHMs, the function updates the job and mhm status depending on criteria.
+  */
 
   if (tagObject.type === 'so') {
     return;
   }
 
-  // Retrieve job that's not completed
+  // Retrieve assigned jobs that hasn't been completed for the tagObject
 
   let jobObject;
   try {
