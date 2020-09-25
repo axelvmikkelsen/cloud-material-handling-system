@@ -9,19 +9,18 @@ import ReactModal from '../shared/components/UIElements/ReactModal';
 
 const CreateJob = () => {
   const [loadedSOs, setLoadedSOs] = useState();
+  const [loadedAreas, setLoadedAreas] = useState();
   const [formState, setFormState] = useState({
     description: '',
-    fromxcoord: null,
-    fromycoord: null,
-    toxcoord: null,
-    toycoord: null,
+    fromarea: null,
+    toarea: null,
     so: null,
   });
-  const [formSuccess, setFormSuccess] = useState(false);
+  const [formSubmitSuccess, setFormSubmitSuccess] = useState(false);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  let options;
+  let soOptions, areaOptions;
 
   useEffect(() => {
     const requestSOs = async () => {
@@ -32,29 +31,40 @@ const CreateJob = () => {
         setLoadedSOs(responseData.objects);
       } catch (err) {}
     };
+    const requestAreas = async () => {
+      try {
+        const responseData = await sendRequest(
+          process.env.REACT_APP_BACKEND_URL + '/map/5efaf181f8a8e697068e13f5/areas'
+        );
+        setLoadedAreas(responseData.areas);
+      } catch (err) {}
+    }
     requestSOs();
+    requestAreas();
   }, [sendRequest]);
 
   if (loadedSOs) {
-    options = loadedSOs.map((so) => (
+    soOptions = loadedSOs.map((so) => (
       <option key={so.id} value={so.id}>
-        Tag {so.name}
+        {so.name}
       </option>
     ));
+  }
+
+  if (loadedAreas) {
+    areaOptions = loadedAreas.map(area => (
+      <option key={area.id} value={area.id}>
+        {area.name}
+      </option>
+    ))
   }
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     const body = {
       description: formState.description,
-      from: {
-        x: formState.fromxcoord,
-        y: formState.fromycoord,
-      },
-      to: {
-        x: formState.toxcoord,
-        y: formState.toycoord,
-      },
+      fromarea: formState.fromarea,
+      toarea: formState.toarea,
       soid: formState.so,
     };
     try {
@@ -66,7 +76,7 @@ const CreateJob = () => {
       );
 
       if (response.success) {
-         setFormSuccess(true);
+         setFormSubmitSuccess(true);
       }
     } catch (err) {
       console.log(error);
@@ -80,7 +90,7 @@ const CreateJob = () => {
     setFormState({ ...newState });
   };
 
-  if (formSuccess) {
+  if (formSubmitSuccess) {
      return <Redirect to="/dashboard" />
   }
 
@@ -109,45 +119,41 @@ const CreateJob = () => {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>From Location</Form.Label>
+              <Form.Label>From AREA</Form.Label>
               <Form.Row>
-                <Col xs={3}>
+                <Col xs={6}>
                   <Form.Control
-                    id="fromxcoord"
-                    type="number"
-                    placeholder="X-Coordinate"
+                    as="select"
+                    className="mr-sm-2"
+                    id="fromarea"
+                    custom
                     onChange={inputHandler}
-                  />
-                </Col>
-                <Col xs={3}>
-                  <Form.Control
-                    id="fromycoord"
-                    type="number"
-                    placeholder="Y-Coordinate"
-                    onChange={inputHandler}
-                  />
+                  >
+                    <option default value={null}>
+                      ---
+                    </option>
+                    {areaOptions}
+                  </Form.Control>
                 </Col>
               </Form.Row>
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>To Location</Form.Label>
+              <Form.Label>To AREA</Form.Label>
               <Form.Row>
-                <Col xs={3}>
+                <Col xs={6}>
                   <Form.Control
-                    id="toxcoord"
-                    type="number"
-                    placeholder="X-Coordinate"
+                    as="select"
+                    className="mr-sm-2"
+                    id="toarea"
+                    custom
                     onChange={inputHandler}
-                  />
-                </Col>
-                <Col xs={3}>
-                  <Form.Control
-                    id="toycoord"
-                    type="number"
-                    placeholder="Y-Coordinate"
-                    onChange={inputHandler}
-                  />
+                  >
+                    <option default value={null}>
+                      ---
+                    </option>
+                    {areaOptions}
+                  </Form.Control>
                 </Col>
               </Form.Row>
             </Form.Group>
@@ -168,7 +174,7 @@ const CreateJob = () => {
                     <option default value={null}>
                       ---
                     </option>
-                    {options}
+                    {soOptions}
                   </Form.Control>
                 </Col>
               </Form.Row>

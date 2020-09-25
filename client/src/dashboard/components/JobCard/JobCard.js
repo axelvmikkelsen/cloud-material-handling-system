@@ -25,7 +25,7 @@ const JobCard = (props) => {
         );
         setLoadedJobs(responseData.jobs);
       } catch (err) {
-        console.log('Cold not fetch');
+        console.log('Cold not fetch it');
       }
     };
     requestJob();

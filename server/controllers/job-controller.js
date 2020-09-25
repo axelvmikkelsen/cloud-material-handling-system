@@ -6,54 +6,58 @@ const SmartObject = require('../models/so');
 const MHMObject = require('../models/mhm');
 const JobObject = require('../models/job');
 const AreaObject = require('../models/area');
+const job = require('../models/job');
 
 const createJob = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
       new HttpError(
-        'Invalid inputs passed when creating a Job, please check your input', 422
+        'Invalid inputs passed when creating a Job, please check your input',
+        422
       )
     );
   }
 
-  const { description, from, destination, soid } = req.body;
+  const { description, fromarea, toarea, soid } = req.body;
 
-  if (from === destination) {
+  if (fromarea === toarea) {
     return next(
       new HttpError(
-        'Start and destination area are the same, invalid input', 422
+        'Start and destination area are the same, invalid input',
+        422
+      )
+    );
+  }
+
+  // Finding the Area Objects
+  let fromArea, toArea;
+  try {
+    fromArea = await AreaObject.findById(fromarea);
+    toArea = await AreaObject.findById(toarea);
+  } catch (err) {
+    return next(
+      new HttpError(
+        'The areas are somehow invalid, could not be retreieved by ID',
+        422
       )
     );
   }
 
   // Find area coordinates to classify distance
-  let fromArea, toArea, fromCoord, toCoord;
-  try {
-    fromArea = await AreaObject.findById(from);
-    toArea = await AreaObject.findById(destination);
-  } catch (err) {
-    return next(new HttpError('Finding the start and destination areas failed', 500));
-  }
-
-  if (!fromArea || !toArea) {
-    return next(new HttpError('No areas found', 500));
-  }
-
+  let fromCoord, toCoord;
   try {
     fromCoord = {
-      x: (fromArea.xend - fromArea.xstart),
-      y: (fromArea.yend - fromArea.ystart)
+      x: fromArea.xend - fromArea.xstart,
+      y: fromArea.yend - fromArea.ystart,
     };
     toCoord = {
-      x: (toArea.xend - toArea.xstart),
-      y: (toArea.yend - toArea.ystart)
+      x: toArea.xend - toArea.xstart,
+      y: toArea.yend - toArea.ystart,
     };
   } catch (err) {
     return next(new HttpError('Assigning coordinates to areas failed', 500));
   }
-
-
 
   let smartObject;
   try {
@@ -74,8 +78,8 @@ const createJob = async (req, res, next) => {
       description,
       status: 'unassigned',
       workstatus: '',
-      fromarea: from,
-      toarea: destination,
+      fromarea,
+      toarea,
       from: fromCoord,
       destination: toCoord,
       ect: 0,
@@ -90,7 +94,7 @@ const createJob = async (req, res, next) => {
   try {
     await createdJob.save();
   } catch (err) {
-    res.status(500).json({ success: false })
+    res.status(500).json({ success: false });
     return next(new HttpError('Saving the Job failed, please try again', 500));
   }
 
@@ -183,52 +187,126 @@ const assignJob = async (req, res, next) => {
 const getScheduledJobs = async (req, res, next) => {
   let jobs;
   try {
-    jobs = await JobObject.find({ status: 'assigned', workstatus: { $ne: 'completed' }});
+    jobs = await JobObject.find({
+      status: 'assigned',
+      workstatus: { $ne: 'completed' },
+    });
   } catch (err) {
     return next(new HttpError('Could not retrieve Jobs', 500));
   }
 
+  
   try {
+    let editJobs = await editJobStructure(jobs);
     res.json({
-      jobs: jobs.map((job) => job.toObject({ getters: true })),
+      jobs: editJobs,
     });
   } catch (err) {
     return next(new HttpError('No jobs found', 500));
   }
-}
+};
 
 const getUnscheduledJobs = async (req, res, next) => {
   let jobs;
   try {
-    jobs = await JobObject.find({ status: 'unassigned'});
+    jobs = await JobObject.find({ status: 'unassigned' });
   } catch (err) {
     return next(new HttpError('Could not retrieve Jobs', 500));
   }
 
   try {
+    let editJobs = await editJobStructure(jobs);
     res.json({
-      jobs: jobs.map((job) => job.toObject({ getters: true })),
+      jobs: editJobs,
     });
   } catch (err) {
     return next(new HttpError('No jobs found', 500));
   }
-}
+};
 
 const getCompletedJobs = async (req, res, next) => {
   let jobs;
   try {
-    jobs = await JobObject.find({ workstatus: 'completed'});
+    jobs = await JobObject.find({ workstatus: 'completed' });
   } catch (err) {
     return next(new HttpError('Could not retrieve Jobs', 500));
   }
 
   try {
+    let editJobs = await editJobStructure(jobs);
     res.json({
-      jobs: jobs.map((job) => job.toObject({ getters: true })),
+      jobs: editJobs,
     });
   } catch (err) {
     return next(new HttpError('No jobs found', 500));
   }
+};
+
+const editJobStructure = async (jobs) => {
+  let fromAreaName, toAreaName, soName, mhmName;
+  let newJobs = [];
+  for (i = 0; i < jobs.length; i++) {
+    const oldJob = jobs[i];
+    fromAreaName = await getFromArea(oldJob.fromarea);
+    toAreaName = await getToArea(oldJob.toarea);
+    soName = await getSOName(oldJob.so);
+    mhmName = await getMHMName(oldJob.mhm);
+    let newJob = {
+      _id: oldJob._id,
+      status: oldJob.status,
+      workstatus: oldJob.workstatus,
+      fromarea: fromAreaName,
+      toarea: toAreaName,
+      so: soName,
+      mhm: mhmName,
+      timecreated: oldJob.timecreated,
+    }
+    newJobs.push(newJob);
+  }
+  return newJobs;
+}
+
+const getFromArea = async (fromId) => {
+  let fromArea;
+  try {
+    fromArea = await AreaObject.findById(fromId);
+  } catch (err) {
+
+  }
+  return fromArea.name;
+}
+
+const getToArea = async (toId) => {
+  let toArea;
+  try {
+    toArea = await AreaObject.findById(toId);
+  } catch (err) {
+
+  }
+  return toArea.name;
+}
+
+const getSOName = async (soId) => {
+  let so;
+  try {
+    so = await SmartObject.findById(soId);
+  } catch (err) {
+
+  }
+  return so.name;
+}
+
+const getMHMName = async (mhmId) => {
+  let mhm;
+  try {
+    mhm = await MHMObject.findById(mhmId);
+  } catch(err) {
+
+  }
+  if (!mhm) {
+    return 'NaN';
+  }
+  return mhm.name;
 }
 
 exports.createJob = createJob;

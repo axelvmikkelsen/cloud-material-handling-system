@@ -33,8 +33,7 @@ const createGrid = async (req, res, next) => {
 };
 
 const createArea = async (req, res, next) => {
-  const { name, description, xstart, xend, ystart, yend } = req.body;
-  const gridId = req.params.grid_id;
+  const { name, xstart, xend, ystart, yend, gridId} = req.body;
 
   if (xstart >= xend || ystart >= yend) {
     return next(
@@ -56,7 +55,6 @@ const createArea = async (req, res, next) => {
   try {
     createdArea = new AreaObject({
       name,
-      description,
       xstart,
       xend,
       ystart,
@@ -76,7 +74,7 @@ const getAreasByGridId = async (req, res, next) => {
 
   let areas;
   try {
-    areas = await Areabject.find({ grid: gridId });
+    areas = await AreaObject.find({ grid: gridId });
   } catch (err) {
     return next(
       new HttpError('Could not retrieve areas, an error occured', 500)

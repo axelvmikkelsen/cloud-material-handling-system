@@ -24,7 +24,7 @@ const TableList = (props) => {
         </thead>
         <tbody>
           {props.content.objects.map((row) => (
-              <TableItem key={row.id} {...row} />
+              <TableItem key={Math.random()} {...row} />
           ))}
         </tbody>
       </Table>

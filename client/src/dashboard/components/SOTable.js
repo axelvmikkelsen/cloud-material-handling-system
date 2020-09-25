@@ -7,7 +7,7 @@ import timeUtil from '../../shared/util/timeUtil';
 
 const SOTable = (props) => {
 
-  const headers = ['Tag ID', 'Area', 'Last seen'];
+  const headers = ['Name', 'Area', 'Last seen'];
 
   const objects = [];
 
@@ -15,7 +15,7 @@ const SOTable = (props) => {
     const obj = props.content.objects[i];
     const entry = {};
     try {
-      entry.id = obj.name;
+      entry.id = obj.byname;
       entry.area = obj.area;
       entry.lastseen = timeUtil.timestamptToTimeAgo(obj.lastseen);
     } catch (err) {

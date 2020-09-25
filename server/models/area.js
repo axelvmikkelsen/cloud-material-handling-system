@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 // (0,0) --> Top left
 const areaSchema = new Schema({
   name: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String },
   xstart: { type: Number, required: true },
   xend: { type: Number, required: true },
   ystart: { type: Number, required: true },

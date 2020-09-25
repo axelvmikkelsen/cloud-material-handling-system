@@ -49,7 +49,7 @@ const createSmartObject = async (req, res, next) => {
     );
   }
 
-  const { name, description, transportclass, location } = req.body;
+  const { name, byname, description, transportclass, location } = req.body;
 
   let createdSO;
   try {
@@ -62,6 +62,7 @@ const createSmartObject = async (req, res, next) => {
 
     createdSO = new SmartObject({
       name,
+      byname,
       type: 'so',
       status: 'Unassigned',
       transportclass,

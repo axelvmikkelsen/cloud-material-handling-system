@@ -70,7 +70,7 @@ const InfoTable = (props) => {
       style={{
         borderRadius: '6px',
         position: 'relative',
-        top: '10%',
+        top: '7%',
         marginRight: '15%',
       }}
     >
@@ -88,6 +88,9 @@ const InfoTable = (props) => {
           <Row style={rowStyle}>
             <Col>Map Loaded</Col>
             <Col style={rightStyle}>{output.currentmap}</Col>
+          </Row>
+          <Row style={rowStyle}>
+            <Col><a href="https://app.pozyx.io/" target="_blank" style={{ textAlign: 'center'}}>Pozyx Dashboard</a></Col>
           </Row>
         </Container>
         <Container style={{ paddingTop: '25px' }}>

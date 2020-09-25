@@ -190,7 +190,7 @@ const Dashboard = () => {
       )}
       {loadedMHMs && loadedSOs && loadedJobs && loadedTableData && (
         <React.Fragment>
-          <CardDeck>
+          <CardDeck style={{ maxHeight: '700px', minHeight: '450px'}}>
             <Col sm={9}>
               <JobCard style={{ margin: '5px' }} jobs={loadedJobs} />
             </Col>
@@ -204,7 +204,7 @@ const Dashboard = () => {
             </Col>
           </CardDeck>
 
-          <CardDeck style={{ margin: '5px', marginBottom: '15px' }}>
+          <CardDeck style={{ margin: '15px 5px 5px 15px' }}>
             <SOTable
               title={'Smart Objects'}
               description={

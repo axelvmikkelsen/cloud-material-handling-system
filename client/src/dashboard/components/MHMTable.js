@@ -8,7 +8,7 @@ import timeUtil from '../../shared/util/timeUtil';
 
 const MHMTable = (props) => {
 
-   const headers = ['Tag ID', 'Workstatus', 'Status', 'Area', 'Last seen']
+   const headers = ['Name', 'Workstatus', 'Status', 'Area', 'Last seen']
 
    const objects = []
 
@@ -16,7 +16,7 @@ const MHMTable = (props) => {
       const obj = props.content.objects[i];
       const entry = {};
       try {
-        entry.id = obj.name;
+        entry.id = obj.byname;
         entry.workstatus = obj.workstatus
         entry.status = obj.status
         entry.area = obj.area;

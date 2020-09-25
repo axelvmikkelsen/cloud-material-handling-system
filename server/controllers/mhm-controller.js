@@ -35,13 +35,14 @@ const createMHM = async (req, res, next) => {
     );
   }
 
-  const { name, description, transportclass, location } = req.body;
+  const { name, byname, description, transportclass, location } = req.body;
 
   let createdMHM;
   try {
     // What if there already exists one?
     createdMHM = new MHMObject({
       name,
+      byname,
       type: 'mhm',
       status: 'available',
       workstatus: 'idle',

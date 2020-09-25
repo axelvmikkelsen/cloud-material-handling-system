@@ -6,7 +6,7 @@ import TableList from './TableList';
 import timeUtil from '../../shared/util/timeUtil';
 
 const JobTable = (props) => {
-  const headers = ['Description', 'Work Status', 'Created'];
+  const headers = ['From', 'To', 'SO', 'MHM', 'Work Status', 'Created'];
 
   const objects = [];
 
@@ -21,8 +21,15 @@ const JobTable = (props) => {
         headers.push('Completed');
       }
     }
+
+    if (i === 1) {
+      console.log(obj)
+    }
     try {
-      entry.id = obj.description;
+      entry.from = obj.fromarea;
+      entry.to = obj.toarea;
+      entry.so = obj.so;
+      entry.mhm = obj.mhm;
       entry.workstatus = obj.workstatus;
       entry.created = timeUtil.convertToDate(obj.timecreated);
       if (obj.timeassigned) {

@@ -10,6 +10,7 @@ import ReactModal from '../shared/components/UIElements/ReactModal';
 const CreateTag = () => {
   const [formState, setFormState] = useState({
     name: null,
+    byname: null,
     type: '',
     agv: false,
     forklift: false,
@@ -25,6 +26,7 @@ const CreateTag = () => {
     event.preventDefault();
     const body = {
       name: formState.name,
+      byname: formState.byname,
       type: formState.type,
       transportclass: {
         agv: formState.agv,
@@ -101,6 +103,19 @@ const CreateTag = () => {
                     id="name"
                     type="text"
                     placeholder="Enter ID number for Tag"
+                    onChange={inputHandler}
+                  />
+                </Col>
+              </Form.Row>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Name (to display in dashboard)</Form.Label>
+              <Form.Row>
+                <Col xs={3}>
+                  <Form.Control
+                    id="byname"
+                    type="text"
+                    placeholder="Enter name"
                     onChange={inputHandler}
                   />
                 </Col>

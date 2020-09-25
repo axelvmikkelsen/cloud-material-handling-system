@@ -6,7 +6,7 @@ const helper = require('../lifecycle/helper');
 
 
 const jobSchema = new Schema({
-  description: { type: String, required: true },
+  description: { type: String },
   status: { type: String, required: true, enum: ['unassigned', 'assigned'] },
   workstatus: { type: String, enum: ['', 'pick-up', 'delivering', 'completed']},
   fromarea: { type: mongoose.Types.ObjectId, required: true, ref: 'Area'},
