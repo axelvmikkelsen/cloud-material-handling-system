@@ -293,7 +293,7 @@ const getSOName = async (soId) => {
   } catch (err) {
 
   }
-  return so.name;
+  return so.byname;
 }
 
 const getMHMName = async (mhmId) => {
@@ -306,7 +306,7 @@ const getMHMName = async (mhmId) => {
   if (!mhm) {
     return 'NaN';
   }
-  return mhm.name;
+  return mhm.byname;
 }
 
 exports.createJob = createJob;

@@ -90,7 +90,7 @@ const InfoTable = (props) => {
             <Col style={rightStyle}>{output.currentmap}</Col>
           </Row>
           <Row style={rowStyle}>
-            <Col><a href="https://app.pozyx.io/" target="_blank" style={{ textAlign: 'center'}}>Pozyx Dashboard</a></Col>
+            <Col><a href="https://app.pozyx.io/" target="_blank" rel="noopener noreferrer" style={{ textAlign: 'center'}}>Pozyx Dashboard</a></Col>
           </Row>
         </Container>
         <Container style={{ paddingTop: '25px' }}>
