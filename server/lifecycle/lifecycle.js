@@ -23,7 +23,7 @@ const toggleMqtt = (req, res, next) => {
   try {
     if (status === 'activate') {
       iot.runMqtt(triggerDbUpdate);
-    } 
+    }
     if (status === 'shutdown') {
       iot.disconnectMqtt();
     }
@@ -37,34 +37,46 @@ const toggleAE = async (req, res, next) => {
   const status = req.body.aestatus;
   try {
     if (status === 'activate') {
+      console.log('Init AE');
       await assignmentEngine.init();
     }
     if (status === 'shutdown') {
-      assignmentEngine.shutdown();
+      console.log('Teardown AE');
+      await assignmentEngine.shutdown();
     }
-    res.json({ success: status })
+    res.json({ success: status });
   } catch (err) {
-    res.json({ success: false, error: err, status: status})
+    res.json({ success: false, error: err, status: status });
   }
 };
 
 const triggerDbUpdate = async (message) => {
   const { tagId, timestamp, data } = message;
-
-  const tagObject = await helper.findTag(tagId);
-  if (!tagObject) {
-    throw new HttpError('The tag object from MQTT does not match any database entry', 422);
-  }
-  
-  await updateLocationAndArea(tagObject, data.coordinates, timestamp-(2*60*60)).then(async () => {
-    await jobHandler(tagObject);
-  })
-
+  let tagObject = null;
   try {
-    logMessage(tagObject, message);
+    tagObject = await helper.findTag(tagId);
   } catch (err) {
-    throw new HttpError('Logging the message failed', 422);
+    console.log('Failed to take it into account');
   }
+
+  if (!tagObject._id) {
+    return;
+  }
+
+
+  await updateLocationAndArea(
+    tagObject,
+    data.coordinates,
+    timestamp - 2 * 60 * 60
+  ).then(async () => {
+    await jobHandler(tagObject);
+  });
+
+  // try {
+  //   logMessage(tagObject, message);
+  // } catch (err) {
+  //   throw new HttpError('Logging the message failed', 422);
+  // }
 };
 
 const updateLocationAndArea = async (tagObject, coord, timestamp) => {
@@ -72,22 +84,28 @@ const updateLocationAndArea = async (tagObject, coord, timestamp) => {
   try {
     distanceMoved = measures.euclideanDistance(tagObject.location, coord);
   } catch (err) {
-    throw new HttpError('The error occured because a field couldnt be accessed, there is a database mismatch', 422);
+    // throw new HttpError(
+    //   'The error occured because a field couldnt be accessed, there is a database mismatch',
+    //   422
+    // );
   }
+  if (!distanceMoved) {
+    return;
+  } 
   // If the tag hasn't moved since last message, no update
   // if (distanceMoved <= 50) {
   //   return;
   // }
   let area = helper.classifyArea(areas, coord);
   if (!area) {
-    area = {name: 'NaN'}
+    area = { name: 'NaN' };
   }
 
   try {
     tagObject.location.x = coord.x;
     tagObject.location.y = coord.y;
     tagObject.area = area.name;
-    tagObject.lastseen = Math.round(timestamp)
+    tagObject.lastseen = Math.round(timestamp);
   } catch (err) {
     throw new HttpError('Fields for the tags could not be retrieved', 500);
   }
@@ -138,23 +156,27 @@ const jobHandler = async (tagObject) => {
   let distance;
   let changed = false;
 
+  if (!jobObject._id) {
+    return
+  }
+
   if (jobObject.workstatus === 'delivering') {
     distance = measures.euclideanDistance(
       jobObject.destination,
       tagObject.location
     );
-    if (distance <= 500) {
+    if (distance <= 1000) {
       jobObject.workstatus = 'completed';
       jobObject.timecompleted = Date.now();
       tagObject.workstatus = 'idle';
-      tagObject.status = 'unassigned';
+      tagObject.status = 'available';
       changed = true;
     }
   }
 
   if (jobObject.workstatus === 'pick-up') {
     distance = measures.euclideanDistance(jobObject.from, tagObject.location);
-    if (distance <= 500) {
+    if (distance <= 1000) {
       jobObject.workstatus = 'delivering';
       tagObject.workstatus = 'delivering';
       changed = true;
@@ -216,12 +238,12 @@ const getServerStatus = async (req, res, next) => {
   } catch (err) {
     throw new HttpError('Something went wrong when getting server status', 500);
   }
-  res.status(200).json({ success: true, state })
-}
+  res.status(200).json({ success: true, state });
+};
 
 const getMqttStatus = async (req, res, next) => {
   let state;
-}
+};
 
 exports.initLifecycle = initLifecycle;
 exports.toggleMqtt = toggleMqtt;

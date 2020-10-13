@@ -34,11 +34,12 @@ const CreateJob = () => {
     const requestAreas = async () => {
       try {
         const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + '/map/5efaf181f8a8e697068e13f5/areas'
+          process.env.REACT_APP_BACKEND_URL +
+            '/map/5efaf181f8a8e697068e13f5/areas'
         );
         setLoadedAreas(responseData.areas);
       } catch (err) {}
-    }
+    };
     requestSOs();
     requestAreas();
   }, [sendRequest]);
@@ -46,17 +47,17 @@ const CreateJob = () => {
   if (loadedSOs) {
     soOptions = loadedSOs.map((so) => (
       <option key={so.id} value={so.id}>
-        {so.name}
+        {so.byname}
       </option>
     ));
   }
 
   if (loadedAreas) {
-    areaOptions = loadedAreas.map(area => (
+    areaOptions = loadedAreas.map((area) => (
       <option key={area.id} value={area.id}>
         {area.name}
       </option>
-    ))
+    ));
   }
 
   const onSubmitHandler = async (event) => {
@@ -76,7 +77,7 @@ const CreateJob = () => {
       );
 
       if (response.success) {
-         setFormSubmitSuccess(true);
+        setFormSubmitSuccess(true);
       }
     } catch (err) {
       console.log(error);
@@ -91,7 +92,7 @@ const CreateJob = () => {
   };
 
   if (formSubmitSuccess) {
-     return <Redirect to="/dashboard" />
+    return <Redirect to="/dashboard" />;
   }
 
   return (
@@ -100,7 +101,14 @@ const CreateJob = () => {
         <Card.Title style={{ marginTop: '10px' }}>Create Job</Card.Title>
       </Card.Header>
       <Card.Body>
-        {error && <ReactModal heading={"Something went wrong"} error={error} save={false} clear={clearError} />}
+        {error && (
+          <ReactModal
+            heading={'Something went wrong'}
+            error={error}
+            save={false}
+            clear={clearError}
+          />
+        )}
         {isLoading && <LoadingSpinner />}
         {!isLoading && (
           <Form onSubmit={onSubmitHandler}>

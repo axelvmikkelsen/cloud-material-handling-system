@@ -48,12 +48,12 @@ const createJob = async (req, res, next) => {
   let fromCoord, toCoord;
   try {
     fromCoord = {
-      x: fromArea.xend - fromArea.xstart,
-      y: fromArea.yend - fromArea.ystart,
+      x: (fromArea.xend - fromArea.xstart)/2 + fromArea.xstart,
+      y: (fromArea.yend - fromArea.ystart)/2 + fromArea.ystart,
     };
     toCoord = {
-      x: toArea.xend - toArea.xstart,
-      y: toArea.yend - toArea.ystart,
+      x: (toArea.xend - toArea.xstart)/2 + toArea.xstart,
+      y: (toArea.yend - toArea.ystart)/2 + toArea.ystart,
     };
   } catch (err) {
     return next(new HttpError('Assigning coordinates to areas failed', 500));

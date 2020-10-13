@@ -12,7 +12,7 @@ let assignInterval;
 
 const init = async () => {
   jobStack = await findAllUnassigned();
-  assignInterval = setInterval(() => assignJobs(jobStack), 15000);
+  assignInterval = setInterval(() => assignJobs(jobStack), 10000);
 };
 
 const shutdown = () => {
@@ -46,12 +46,16 @@ const findCandidate = async (job) => {
       so: soId,
     });
   } catch (err) {
-     throw new HttpError('Something went wrong when trying to find other assigned jobs for the SO', 500);
+    throw new HttpError(
+      'Something went wrong when trying to find other assigned jobs for the SO',
+      500
+    );
   }
 
   // If the SO is currently active in a job, we return
-  if (occupiedJobs) {
-     return;
+  if (occupiedJobs._id) {
+    console.log('So is occupied');
+    return;
   }
 
   let mhms;
